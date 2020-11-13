@@ -1,0 +1,41 @@
+DataCadastro,DataObito,Classificacao,Municipio,IdadeNaDataNotificacao,ComorbidadePulmao,ComorbidadeCardio,ComorbidadeRenal,ComorbidadeDiabetes,ComorbidadeTabagismo,ComorbidadeObesidade,FicouInternado
+2020-07-20,0000-00-00,Confirmados,NOVA VENECIA,"47 anos, 7 meses, 12 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-07-20,0000-00-00,Confirmados,IBIRACU,"28 anos, 4 meses, 7 dias",Não,Não,Não,Não,Não,Não,Não
+2020-07-20,0000-00-00,Descartados,LINHARES,"40 anos, 7 meses, 22 dias",Não,Não,Não,Não,Não,Não,Não
+2020-07-20,0000-00-00,Descartados,VILA VELHA,"42 anos, 0 meses, 25 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-07-20,0000-00-00,Descartados,SERRA,"37 anos, 10 meses, 14 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-07-20,0000-00-00,Confirmados,LINHARES,"33 anos, 7 meses, 19 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-07-20,0000-00-00,Suspeito,VITORIA,"29 anos, 10 meses, 3 dias",Não,Sim,Não,Não,Não,Não,Não Informado
+2020-07-20,0000-00-00,Confirmados,ARACRUZ,"46 anos, 10 meses, 14 dias",Não,Não,Não,Não,Não,Não,Não
+2020-07-20,0000-00-00,Suspeito,BARRA DE SAO FRANCISCO,"24 anos, 4 meses, 1 dias",Não,Não,Não,Não,Não,Não,Não
+2020-07-20,0000-00-00,Descartados,CARIACICA,"53 anos, 4 meses, 15 dias",Não,Sim,Não,Não,Não,Não,Não
+2020-07-20,0000-00-00,Confirmados,VILA VELHA,"49 anos, 0 meses, 22 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-07-10,0000-00-00,Confirmados,CACHOEIRO DE ITAPEMIRIM,"37 anos, 10 meses, 27 dias",Não,Não,Não,Não,Não,Não,Não
+2020-07-10,0000-00-00,Confirmados,LINHARES,"50 anos, 4 meses, 2 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-07-10,0000-00-00,Descartados,CACHOEIRO DE ITAPEMIRIM,"41 anos, 11 meses, 7 dias",Não,Não,Não,Não,Não,Não,Não
+2020-07-10,0000-00-00,Descartados,SERRA,"20 anos, 6 meses, 10 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-07-10,0000-00-00,Descartados,FUNDAO,"66 anos, 1 meses, 9 dias",Não,Sim,Não,Não,Não,Não,Não
+2020-07-10,0000-00-00,Suspeito,VITORIA,"15 anos, 0 meses, 16 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-07-10,0000-00-00,Descartados,LINHARES,"69 anos, 8 meses, 20 dias",Não,Sim,Não,Não,Não,Não,Não Informado
+2020-07-10,0000-00-00,Confirmados,ATILIO VIVACQUA,"30 anos, 11 meses, 10 dias",Não,Não,Não,Não,Não,Não,Não
+2020-07-10,0000-00-00,Confirmados,ATILIO VIVACQUA,"37 anos, 9 meses, 7 dias",Não,Não,Não,Não,Não,Não,Não
+2020-07-10,0000-00-00,Suspeito,VITORIA,"26 anos, 1 meses, 10 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-07-10,0000-00-00,Descartados,CACHOEIRO DE ITAPEMIRIM,"6 anos, 4 meses, 21 dias",Sim,Não,Não,Não,Não,Não,Não
+2020-07-10,0000-00-00,Suspeito,VITORIA,"10 anos, 11 meses, 10 dias",Não,Não,Não,Não,Não,Não,Não
+2020-07-10,0000-00-00,Suspeito,VITORIA,"21 anos, 6 meses, 27 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-07-10,0000-00-00,Confirmados,CACHOEIRO DE ITAPEMIRIM,"37 anos, 11 meses, 5 dias",Não,Não,Não,Não,Não,Não,Não
+2020-07-08,0000-00-00,Confirmados,COLATINA,"42 anos, 8 meses, 24 dias",Não,Sim,Não,Não,Não,Não,Não Informado
+2020-06-26,0000-00-00,Confirmados,MIMOSO DO SUL,"38 anos, 8 meses, 17 dias",Não,Não,Não,Não,Não,Não,Não
+2020-06-26,0000-00-00,Descartados,CARIACICA,"4 anos, 8 meses, 1 dias",Não,Não,Não,Não,Não,Não,Ignorado
+2020-06-26,0000-00-00,Descartados,AFONSO CLAUDIO,"19 anos, 5 meses, 15 dias",Não,Não,Não,Não,Não,Não,Não
+2020-06-26,0000-00-00,Descartados,LINHARES,"52 anos, 8 meses, 21 dias",Não,Sim,Não,Não,Não,Não,Não Informado
+2020-06-17,0000-00-00,Confirmados,COLATINA,"28 anos, 5 meses, 23 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-06-17,0000-00-00,Confirmados,SERRA,"36 anos, 4 meses, 13 dias",Não,Não,Não,Não,Não,Não,Não
+2020-06-17,0000-00-00,Confirmados,CARIACICA,"37 anos, 8 meses, 12 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-06-17,0000-00-00,Descartados,VILA VELHA,"60 anos, 4 meses, 21 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-06-10,0000-00-00,Suspeito,LINHARES,"50 anos, 1 meses, 21 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-06-10,0000-00-00,Confirmados,NOVA VENECIA,"43 anos, 5 meses, 13 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-06-10,0000-00-00,Suspeito,VILA VELHA,"37 anos, 11 meses, 11 dias",Não,Não,Não,Não,Não,Não,Não
+2020-06-02,0000-00-00,Descartados,VILA VELHA,"23 anos, 6 meses, 28 dias",Não,Não,Não,Não,Não,Não,Não Informado
+2020-06-02,0000-00-00,Suspeito,VITORIA,"1 anos, 8 meses, 8 dias",Sim,Não,Não,Não,Não,Não,Não
+2020-06-02,0000-00-00,Confirmados,VILA VELHA,"61 anos, 9 meses, 2 dias",Não,Sim,Não,Não,Não,Não,Sim
