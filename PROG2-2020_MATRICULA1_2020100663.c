@@ -12,7 +12,7 @@ typedef struct{
     tData DataCadastro;             //struct data do dia, mes e ano da data de cadastro
     tData DataObito;                //struct data do dia, mes e ano da data de obito
     char Classificacao[12];         //string de clacificacao (suspeito, confirmado ou descartado)
-    char Municipio[30];              //string de nome do municipio(tem q ver a cidade com o maior nome do ES)
+    char Municipio[30];             //string de nome do municipio(tem q ver a cidade com o maior nome do ES)
     tData IdadeNaDataNotificacao;   //struct data de quantos anos, meses e dias do paciente
     int ComorbidadePulmao;          //sim sera 1 e nao sera 0
     int ComorbidadeCardio;          //sim sera 1 e nao sera 0
