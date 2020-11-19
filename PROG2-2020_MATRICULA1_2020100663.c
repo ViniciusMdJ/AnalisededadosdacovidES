@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct{
+#define LINHAS 40                   //define a quantidade de linhas que tem o arquivo
+
+typedef struct{                     //struct d para armazenar data
     int dia;
     int mes;
     int ano;
@@ -27,17 +29,14 @@ int main(){
     FILE *arq;
     FILE *teste;
     teste = fopen("arquivotexte.txt", "w");
-    arq = fopen("covid19ESresumido.csv", "r");
+    arq = fopen("covid19ESresumid.csv", "r");
     if(arq==NULL || teste==NULL){
         printf("Erro na arbertura do arquivo");
         exit(1);
     }
 
-    tPaciente pessoa;
-    
-
-
-
+    //Cria um vetor de struct para cada paciente
+    tPaciente pessoa[LINHAS]; 
 
 
 return 0;
