@@ -28,11 +28,10 @@ typedef struct{
 int main(){
     FILE *arq;
     //FILE *teste;
-    //teste = fopen("arquivotexte.txt", "w");
 
     tPaciente pessoas[LINHAS];
     arq = fopen("covid19ESresumid.csv", "r");
-    if(arq==NULL || teste==NULL){
+    if(arq==NULL){
         printf("Erro na arbertura do arquivo");
         exit(1);
     }
