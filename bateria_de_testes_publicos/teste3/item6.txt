@@ -1,0 +1,4 @@
+- Resultados para MANTENOPOLIS:
+- A % de pessoas com Covid-19 que ficaram internadas: 3.817%
+- A % de pessoas com Covid-19 que morreram: 4.580%
+- A % de pessoas que ficaram internadas e morreram: 33.333%

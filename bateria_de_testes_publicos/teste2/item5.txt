@@ -1,0 +1,10 @@
+- SERRA: 789 casos
+- VILA VELHA: 785 casos
+- VITORIA: 683 casos
+- CARIACICA: 505 casos
+- LINHARES: 495 casos
+- COLATINA: 431 casos
+- CACHOEIRO DE ITAPEMIRIM: 371 casos
+- ARACRUZ: 256 casos
+- GUARAPARI: 161 casos
+- CASTELO: 125 casos

@@ -1,0 +1,5 @@
+- SERRA: 789 casos
+- VILA VELHA: 788 casos
+- VITORIA: 683 casos
+- CARIACICA: 507 casos
+- LINHARES: 495 casos

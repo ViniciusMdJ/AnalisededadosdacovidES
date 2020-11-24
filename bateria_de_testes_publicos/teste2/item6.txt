@@ -1,0 +1,4 @@
+- Resultados para VITORIA:
+- A % de pessoas com Covid-19 que ficaram internadas: 5.040%
+- A % de pessoas com Covid-19 que morreram: 3.180%
+- A % de pessoas que ficaram internadas e morreram: 79.387%
