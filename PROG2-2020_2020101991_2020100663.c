@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define LINHAS 202362                //define a quantidade de linhas que tem o arquivo
+#define LINHAS 202362               //define a quantidade de linhas que tem o arquivo
 
 typedef struct{                     //struct d para armazenar data
     int dia;
@@ -13,7 +13,7 @@ typedef struct{                     //struct d para armazenar data
 typedef struct{
     tData DataCadastro;             //struct data do dia, mes e ano da data de cadastro
     tData DataObito;                //struct data do dia, mes e ano da data de obito
-    int Classificacao;         //string de clacificacao (suspeito, confirmado ou descartado)
+    int Classificacao;              //string de clacificacao (suspeito, confirmado ou descartado)
     char Municipio[30];             //string de nome do municipio(tem q ver a cidade com o maior nome do ES)
     int IdadeNotificacao;           //quantos ANOS a pessoa tem quando foi notificada
     int ComorbidadePulmao;          //sim sera 1 e nao sera 0
@@ -32,15 +32,31 @@ int VerificaData(tData pessoa, tData inicio, tData fim);
 void printtData(tData data);
 tData LetData();
 
+int CasosentreDatas(tData inicio, tData fim, int indicepaciente);
+
 tPaciente pessoa[LINHAS];
 int main(){
     FILE *arq;
     //Cria um vetor de struct para cada paciente
 	char caminho[15];
 	char cidade[40];
-    int i, mincasos, topcidades;
+    int i, mincasos, topcidades, totalconfirmados = 0;
 	tData inicio4, fim4, inicio5, fim5, inicio7, fim7;
 
+
+	//lendo o arquivo de teste
+	scanf("%[^\n]s", caminho);
+	scanf("%d", &mincasos);
+	inicio4 = LetData();
+	fim4 = LetData();
+	scanf("%d", &topcidades);	
+	inicio5 = LetData();
+	fim5 = LetData();
+	//getchar responsavel por receber \n restante do LetData
+	getchar();
+	scanf("%[^\n]s", cidade);
+	inicio7 = LetData();
+	fim7 = LetData();
 
     arq = fopen("covid19ES.csv", "r");
     if(arq==NULL){
@@ -55,26 +71,23 @@ int main(){
         }
         else{
             pessoa[i] = LeArquivo(arq);
-            printf("%d %d %d %s %d %d %d %d %d %d %d\n",pessoa[i].DataCadastro.ano, pessoa[i].DataObito.ano, pessoa[i].Classificacao, pessoa[i].Municipio, pessoa[i].ComorbidadePulmao, pessoa[i].ComorbidadeCardio, pessoa[i].ComorbidadeRenal, pessoa[i].ComorbidadeDiabetes, pessoa[i].ComorbidadeTabagismo, pessoa[i].ComorbidadeObesidade, pessoa[i].FicouInternado);
-        }
-        
-    }
-	//lendo o arquivo de teste
-	scanf("%[^\n]s", caminho);
-	scanf("%d", &mincasos);
-	inicio4 = LetData();
-	fim4 = LetData();
-	scanf("%d", &topcidades);	
-	inicio5 = LetData();
-	fim5 = LetData();
-	//getchar responsavel por receper \n restante do LetData
-	getchar();
-	scanf("%[^\n]s", cidade);
-	inicio7 = LetData();
-	fim7 = LetData();
-    //pessoa[0] = LeArquivo(arq);
-    //printf("%d %d %d %s %d %d %d %d %d %d %d\n",pessoa[0].DataCadastro.ano, pessoa[0].DataObito.ano, pessoa[0].Classificacao, pessoa[0].Municipio, pessoa[22].ComorbidadePulmao, pessoa[0].ComorbidadeCardio, pessoa[0].ComorbidadeRenal, pessoa[0].ComorbidadeDiabetes, pessoa[0].ComorbidadeTabagismo, pessoa[0].ComorbidadeObesidade, pessoa[0].FicouInternado);
+            printf("%d %d %d %s %d %d %d %d %d %d %d\n",
+					pessoa[i].DataCadastro.ano, pessoa[i].DataObito.ano, 
+					pessoa[i].Classificacao, pessoa[i].Municipio, 
+					pessoa[i].ComorbidadePulmao, pessoa[i].ComorbidadeCardio, 
+					pessoa[i].ComorbidadeRenal, pessoa[i].ComorbidadeDiabetes, 
+					pessoa[i].ComorbidadeTabagismo, 
+					pessoa[i].ComorbidadeObesidade, pessoa[i].FicouInternado);
 
+        }
+    }
+	for(i=0; i<LINHAS; i++){
+			if(CasosentreDatas(inicio4, fim4, i)){
+				totalconfirmados++;
+			}
+
+	}
+	printf("%d\n", totalconfirmados);
 
 return 0;
 }
@@ -155,29 +168,19 @@ tPaciente LeArquivo(FILE* arq){
     }
     else{pessoa.FicouInternado = 0;}
 
-    return pessoa;
+return pessoa;
 }
 
-int VerificaData(tData pessoa, tData inicio, tData fim){
-	//verifica se o ano de cadastro esta entre o intervalo
-	if(inicio.ano <= pessoa.ano && pessoa.ano <= fim.ano){
-		//verifica se o mes de cadastro esta entre o intervalo
-		if(inicio.mes < pessoa.mes && pessoa.mes < fim.mes){
-			return 1;
-		}
-		else if(inicio.mes == pessoa.mes){
-			//verifica se o dia de cadastro esta entre o intervalo
-			if(inicio.dia <= pessoa.dia){
-				return 1;
-			}
-		else if(pessoa.mes == fim.mes){
-			if(pessoa.dia <= fim.dia){
-				return 1;
-			}
-		}
-		}
+int VerificaData(tData pessoas, tData inicio, tData fim){
+	int start, end, entre;
+	start = (inicio.ano * 10000) + (inicio.mes *100) + inicio.dia;
+	end = (fim.ano * 10000) + (fim.mes *100) + fim.dia;
+	entre = (pessoas.ano * 10000) + (pessoas.mes *100) + pessoas.dia;
+
+	if(start <= entre && entre <= end){
+		return 1;
 	}
-	return 0;
+return 0;
 };
 
 tData LetData(){
@@ -188,4 +191,17 @@ return lido;
 
 void printtData(tData data){
 	printf("%d-%d-%d\n", data.ano, data.mes, data.dia);
+};
+
+int CasosentreDatas(tData inicio, tData fim, int indicepaciente){
+	//cria um tData com a DataCadastro do indice recebido na main
+	tData datapaciente = pessoa[indicepaciente].DataCadastro; 
+	//verifica se a data esta entre o intevalo passao na funcao
+	if(VerificaData(datapaciente, inicio, fim)){
+		//verifica se o paciente esta com covid caso sim returna 1
+		if(pessoa[indicepaciente].Classificacao){
+			return 1;
+		}
+	}	
+return 0;
 };
