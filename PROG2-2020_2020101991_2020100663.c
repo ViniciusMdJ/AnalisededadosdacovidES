@@ -3,6 +3,7 @@
 #include <string.h>
 
 #define LINHAS 202362               //define a quantidade de linhas que tem o arquivo
+#define QTDMUNICIPIOS 78            //define a quantidade de municipios
 
 typedef struct{                     //struct d para armazenar data
     int dia;
@@ -13,7 +14,7 @@ typedef struct{                     //struct d para armazenar data
 typedef struct{
     tData DataCadastro;             //struct data do dia, mes e ano da data de cadastro
     tData DataObito;                //struct data do dia, mes e ano da data de obito
-    int Classificacao;              //string de clacificacao (suspeito, confirmado ou descartado)
+    int Classificacao;              //armazena se tem covid ou nao, se confimado recebe 1, senao recebe 0
     char Municipio[30];             //string de nome do municipio(tem q ver a cidade com o maior nome do ES)
     int IdadeNotificacao;           //quantos ANOS a pessoa tem quando foi notificada
     int ComorbidadePulmao;          //sim sera 1 e nao sera 0
@@ -22,7 +23,7 @@ typedef struct{
     int ComorbidadeDiabetes;        //sim sera 1 e nao sera 0
     int ComorbidadeTabagismo;       //sim sera 1 e nao sera 0
     int ComorbidadeObesidade;       //sim sera 1 e nao sera 0
-    int FicouInternado;             //sim sera 1, nao sera 0 e nao informado sera 2
+    int FicouInternado;             //sim sera 1 e nao ou nao irformado sera 0
 }tPaciente;
 
 tPaciente LeArquivo(FILE* arq);
@@ -34,10 +35,12 @@ tData LetData();
 
 int CasosentreDatas(tData inicio, tData fim, int indicepaciente);
 
-tPaciente pessoa[LINHAS];
+tPaciente pessoa[LINHAS];           //cria o vetor de pacientes globalmente
+
 int main(){
     FILE *arq;
-    //Cria um vetor de struct para cada paciente
+
+    //cria as variaveis usadas no programa
 	char caminho[15];
 	char cidade[40];
     int i, mincasos, topcidades, totalconfirmados = 0;
@@ -58,12 +61,14 @@ int main(){
 	inicio7 = LetData();
 	fim7 = LetData();
 
+    //arbrindo o arquivo .csv
     arq = fopen("covid19ES.csv", "r");
     if(arq==NULL){
         printf("Erro na arbertura do arquivo");
         exit(1);
     }
-     
+    
+    //lendo o arquivo .csv
     for(i=-1;i<LINHAS;i++){
         if(i==-1){
             char lido[1000];
@@ -81,10 +86,13 @@ int main(){
 
         }
     }
+
+    //verificando os itens pedidos
 	for(i=0; i<LINHAS; i++){
-			if(CasosentreDatas(inicio4, fim4, i)){
-				totalconfirmados++;
-			}
+        //verifica o item 4, se tem covid confirmada e se esta entre as datas fornecidas
+		if(CasosentreDatas(inicio4, fim4, i)){
+			totalconfirmados++;
+		}
 
 	}
 	printf("%d\n", totalconfirmados);
