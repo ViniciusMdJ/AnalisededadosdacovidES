@@ -36,12 +36,18 @@ tPaciente LeArquivo(FILE* arq);
 // Funcao para verificar se a data de cadastro esta entre um certo intervalo
 int VerificaData(tData pessoa, tData inicio, tData fim);
 
+//Funcao para printar o struct tData
 void printtData(tData data);
+//Funcao para zerar as variaveis do struct tCidade
 void ZeraCidades(tCidade* Municipios);
+//Funcao para adicionar os casos confirmados do municipio
 void AdicionaMunicipioseCasos(tCidade* Municipios, int Indice);
+//Funcao para ler datas
 tData LetData();
 
+//Funcao para adicionar os casos comfirmados entre um certo intervalo
 int CasosentreDatas(tData inicio, tData fim, int indicepaciente);
+//Verifica se a cidade ja foi adicionada no vetor municipios
 int VerificaseCidadecadastrada(tCidade municipios[], int Indice);
 
 //cria o vetor de pacientes globalmente
@@ -54,6 +60,7 @@ int main(){
 	char caminho[15];
 	char cidade[40];
     int i, mincasos, topcidades, totalconfirmados = 0;
+	//Variaveis para cada item que possui intervalo de datas
 	tData inicio4, fim4, inicio5, fim5, inicio7, fim7;
     tCidade Municipios[QTDMUNICIPIOS];
 
@@ -109,7 +116,7 @@ int main(){
 		if(CasosentreDatas(inicio4, fim4, i)){
 			totalconfirmados++;
 		}
-
+		//Verifica se a pessoa teve covid e Adiciona ao total de casos do municipio
         if(pessoa[i].Classificacao){
             AdicionaMunicipioseCasos(Municipios, i);
         }
@@ -217,18 +224,20 @@ return 0;
 
 tData LetData(){
 	tData lido;
+	//Recebe da entrada padrao a data formatada
 	scanf("%4d-%2d-%2d", &lido.ano, &lido.mes, &lido.dia);
 return lido;
 };
 
 void printtData(tData data){
+	//Imprime na saida padrao a data formatada
 	printf("%d-%d-%d\n", data.ano, data.mes, data.dia);
 };
 
 int CasosentreDatas(tData inicio, tData fim, int indicepaciente){
 	//cria um tData com a DataCadastro do indice recebido na main
 	tData datapaciente = pessoa[indicepaciente].DataCadastro; 
-	//verifica se a data esta entre o intevalo passao na funcao
+	//verifica se a data esta entre o intevalo passado na funcao
 	if(VerificaData(datapaciente, inicio, fim)){
 		//verifica se o paciente esta com covid caso sim returna 1
 		if(pessoa[indicepaciente].Classificacao){
@@ -238,18 +247,27 @@ int CasosentreDatas(tData inicio, tData fim, int indicepaciente){
 return 0;
 };
 
+//Funcao para popular todas as variaveis do struct
 void ZeraCidades(tCidade* Municipios){
     int i;
+
     for(i=0; i<QTDMUNICIPIOS; i++){
+		//Popula todas as variaveis cidade do estruct com "void"
         strcpy(Municipios[i].Cidade, "void");
+		//Zera todos os casos da cidade
         Municipios[i].QtdCasos = 0;
         Municipios[i].QtdCasosEntreDatas = 0;
     }
 };
 
+//Funcao que adiciona o municipio no vetor caso ele nao esteja
+//E adiciona mais 1 caso confimado
 void AdicionaMunicipioseCasos(tCidade* Municipios, int Indice){
     int i, retornado = VerificaseCidadecadastrada(Municipios, Indice);
+
+	//Retornado com valor -1 significa que o municipio ainda nao foi adicionado ao vetor
     if(retornado==-1){
+		//Como o municipio ainda nao estava salvo ele e adicionado e somado mais 1 aos casos confirmados
         for(i=0;i<QTDMUNICIPIOS;i++){
             if(strcmp(Municipios[i].Cidade, "void") == 0){
                 strcpy(Municipios[i].Cidade, pessoa[Indice].Municipio);
@@ -259,18 +277,24 @@ void AdicionaMunicipioseCasos(tCidade* Municipios, int Indice){
         }
     }
     else{
+		//Adiciciona mais um aos casos confirmados dos municipios os quais ja estao salvos
         Municipios[retornado].QtdCasos++;
     }    
 };
 
 int VerificaseCidadecadastrada(tCidade municipios[], int Indice){
     int i;
+
+	//Busca dentro do vetor municipios se o municipio em questao ja foi adicionado
     for(i=0;i<QTDMUNICIPIOS;i++){
+		//Retorna o indice onde o municipio ja esta caso ele esteja salvo
         if(strcmp(pessoa[Indice].Municipio,municipios[i].Cidade) == 0){
             return i;
         }
+		//Retorna -1 caso o municipio nao esteja salvo
         if(strcmp(municipios[i].Cidade, "void") == 0){
             return -1;
         }
     }
+return 0;
 };
