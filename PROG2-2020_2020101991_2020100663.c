@@ -88,6 +88,8 @@ int main(){
 
 	}
 	printf("%d\n", totalconfirmados);
+	//fechando o arquivo para que nao haja vazamento de memoria
+	fclose(arq);
 
 return 0;
 }
