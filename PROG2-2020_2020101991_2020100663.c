@@ -12,6 +12,12 @@ typedef struct{                     //struct d para armazenar data
 }tData;
 
 typedef struct{
+    char Cidade[30];
+    int QtdCasos;
+    int QtdCasosEntreDatas;
+}tCidade;
+
+typedef struct{
     tData DataCadastro;             //struct data do dia, mes e ano da data de cadastro
     tData DataObito;                //struct data do dia, mes e ano da data de obito
     int Classificacao;              //armazena se tem covid ou nao, se confimado recebe 1, senao recebe 0
@@ -31,11 +37,15 @@ tPaciente LeArquivo(FILE* arq);
 int VerificaData(tData pessoa, tData inicio, tData fim);
 
 void printtData(tData data);
+void ZeraCidades(tCidade* Municipios);
+void AdicionaMunicipioseCasos(tCidade* Municipios, int Indice);
 tData LetData();
 
 int CasosentreDatas(tData inicio, tData fim, int indicepaciente);
+int VerificaseCidadecadastrada(tCidade municipios[], int Indice);
 
-tPaciente pessoa[LINHAS];           //cria o vetor de pacientes globalmente
+//cria o vetor de pacientes globalmente
+tPaciente pessoa[LINHAS];           
 
 int main(){
     FILE *arq;
@@ -45,6 +55,7 @@ int main(){
 	char cidade[40];
     int i, mincasos, topcidades, totalconfirmados = 0;
 	tData inicio4, fim4, inicio5, fim5, inicio7, fim7;
+    tCidade Municipios[QTDMUNICIPIOS];
 
 
 	//lendo o arquivo de teste
@@ -76,16 +87,21 @@ int main(){
         }
         else{
             pessoa[i] = LeArquivo(arq);
-            printf("%d %d %d %s %d %d %d %d %d %d %d\n",
+            /*printf("%d %d %d %s %d %d %d %d %d %d %d\n",
 					pessoa[i].DataCadastro.ano, pessoa[i].DataObito.ano, 
 					pessoa[i].Classificacao, pessoa[i].Municipio, 
 					pessoa[i].ComorbidadePulmao, pessoa[i].ComorbidadeCardio, 
 					pessoa[i].ComorbidadeRenal, pessoa[i].ComorbidadeDiabetes, 
 					pessoa[i].ComorbidadeTabagismo, 
-					pessoa[i].ComorbidadeObesidade, pessoa[i].FicouInternado);
+					pessoa[i].ComorbidadeObesidade, pessoa[i].FicouInternado);*/
 
         }
     }
+    //fechando o arquivo para que nao haja vazamento de memoria
+    fclose(arq);
+
+    //zera as variaveis dentro do struct, a cidade com void e os casos com 0
+    ZeraCidades(Municipios);
 
     //verificando os itens pedidos
 	for(i=0; i<LINHAS; i++){
@@ -94,10 +110,16 @@ int main(){
 			totalconfirmados++;
 		}
 
+        if(pessoa[i].Classificacao){
+            AdicionaMunicipioseCasos(Municipios, i);
+        }
+
 	}
-	printf("%d\n", totalconfirmados);
-	//fechando o arquivo para que nao haja vazamento de memoria
-	fclose(arq);
+	//printf("%d\n", totalconfirmados);
+    for(i=0;i<QTDMUNICIPIOS;i++){
+        printf("%s %d %d\n", Municipios[i].Cidade, Municipios[i].QtdCasos, i);
+    }
+	
 
 return 0;
 }
@@ -214,4 +236,41 @@ int CasosentreDatas(tData inicio, tData fim, int indicepaciente){
 		}
 	}	
 return 0;
+};
+
+void ZeraCidades(tCidade* Municipios){
+    int i;
+    for(i=0; i<QTDMUNICIPIOS; i++){
+        strcpy(Municipios[i].Cidade, "void");
+        Municipios[i].QtdCasos = 0;
+        Municipios[i].QtdCasosEntreDatas = 0;
+    }
+};
+
+void AdicionaMunicipioseCasos(tCidade* Municipios, int Indice){
+    int i, retornado = VerificaseCidadecadastrada(Municipios, Indice);
+    if(retornado==-1){
+        for(i=0;i<QTDMUNICIPIOS;i++){
+            if(strcmp(Municipios[i].Cidade, "void") == 0){
+                strcpy(Municipios[i].Cidade, pessoa[Indice].Municipio);
+                Municipios[i].QtdCasos++;
+                break;
+            }
+        }
+    }
+    else{
+        Municipios[retornado].QtdCasos++;
+    }    
+};
+
+int VerificaseCidadecadastrada(tCidade municipios[], int Indice){
+    int i;
+    for(i=0;i<QTDMUNICIPIOS;i++){
+        if(strcmp(pessoa[Indice].Municipio,municipios[i].Cidade) == 0){
+            return i;
+        }
+        if(strcmp(municipios[i].Cidade, "void") == 0){
+            return -1;
+        }
+    }
 };
