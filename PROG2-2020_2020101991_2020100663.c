@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+#include <math.h>
 
 #define LINHAS 202362               //define a quantidade de linhas que tem o arquivo
 #define QTDMUNICIPIOS 78            //define a quantidade de municipios
@@ -35,33 +37,49 @@ typedef struct{
 tPaciente LeArquivo(FILE* arq);
 // Funcao para verificar se a data de cadastro esta entre um certo intervalo
 int VerificaData(tData pessoa, tData inicio, tData fim);
-
-//Funcao para printar o struct tData
-void printtData(tData data);
-//Funcao para zerar as variaveis do struct tCidade
-void ZeraCidades(tCidade* Municipios);
-//Funcao para adicionar os casos confirmados do municipio
-void AdicionaMunicipioseCasos(tCidade* Municipios, int Indice);
-//Funcao para ler datas
-tData LetData();
-
+//verifica item 7
+int VeridicaIntem7(int indice, tData inicio7, tData fim7);
+//verifica se nao tem nenhuma comorbidade, se nao tem retorna 1, senao 0 
+int VerificaComorbidade(int indice);
 //Funcao para adicionar os casos comfirmados entre um certo intervalo
 int CasosentreDatas(tData inicio, tData fim, int indicepaciente);
 //Verifica se a cidade ja foi adicionada no vetor municipios
 int VerificaseCidadecadastrada(tCidade municipios[], int Indice);
 
+//retorna o quadrado da subtracao da media pela idade do paciente
+float SomaDesvio(float media, int indice);
+
+//Ordena o vetor de municipios em ordem alfabetica para item 3
+void OrdemAlfabetica(tCidade* Municipios);
+//Ordena o vetor de municipios em ordem descrescente em relacao aos casos entre datas do item 5
+void OrdemCasosEntreDatas(tCidade* Municipos);
+//Funcao para zerar as variaveis do struct tCidade
+void ZeraCidades(tCidade* Municipios);
+//Funcao para adicionar os casos confirmados do municipio entre as datas dadas do item 5
+void AdicionaMunicipioseCasosEntreDatas(tCidade* Municipios, int Indice);
+//Funcao para adicionar os casos confirmados do municipio
+void AdicionaMunicipioseCasos(tCidade* Municipios, int Indice);
+//Funcao para ler datas
+tData LetData();
+
 //cria o vetor de pacientes globalmente
 tPaciente pessoa[LINHAS];           
 
 int main(){
+    //cria o ponteiro do arquivo
     FILE *arq;
 
     //cria as variaveis usadas no programa
 	char caminho[15];
 	char cidade[40];
     int i, mincasos, topcidades, totalconfirmados = 0;
+    int morreu, ficouinternado;
+    float por100internadas, por100mortes, por100internadasMortes;
+    float confirmadas6=0, internadas6=0, morreram6=0, internadasMorreram=0;
+    float media=0, quantidade7=0, somatorio=0, zeroComorbidades=0, desvioPadrao, por100item7; 
 	//Variaveis para cada item que possui intervalo de datas
 	tData inicio4, fim4, inicio5, fim5, inicio7, fim7;
+    //vetor de todas as cidades do estado
     tCidade Municipios[QTDMUNICIPIOS];
 
 
@@ -78,6 +96,10 @@ int main(){
 	scanf("%[^\n]s", cidade);
 	inicio7 = LetData();
 	fim7 = LetData();
+    //transforma os caracteres minusculos pra maiusculo do item 6
+    for(i=0;cidade[i]!='\0';i++){
+        cidade[i]= toupper(cidade[i]);
+    }
 
     //arbrindo o arquivo .csv
     arq = fopen("covid19ES.csv", "r");
@@ -94,18 +116,20 @@ int main(){
         }
         else{
             pessoa[i] = LeArquivo(arq);
-            /*printf("%d %d %d %s %d %d %d %d %d %d %d\n",
-					pessoa[i].DataCadastro.ano, pessoa[i].DataObito.ano, 
-					pessoa[i].Classificacao, pessoa[i].Municipio, 
-					pessoa[i].ComorbidadePulmao, pessoa[i].ComorbidadeCardio, 
-					pessoa[i].ComorbidadeRenal, pessoa[i].ComorbidadeDiabetes, 
-					pessoa[i].ComorbidadeTabagismo, 
-					pessoa[i].ComorbidadeObesidade, pessoa[i].FicouInternado);*/
-
+            //verifica se o paciente eh compativel com os requisitos do item 7
+            if(VeridicaIntem7(i, inicio7, fim7)){
+                //soma a idade do paciente para a media
+                media += pessoa[i].IdadeNotificacao;
+                //quantidade de pessoas compativeis com o item 7
+                quantidade7++;
+            }
         }
     }
     //fechando o arquivo para que nao haja vazamento de memoria
     fclose(arq);
+
+    //media para o desvio padrao
+    media /= quantidade7;
 
     //zera as variaveis dentro do struct, a cidade com void e os casos com 0
     ZeraCidades(Municipios);
@@ -118,15 +142,61 @@ int main(){
 		}
 		//Verifica se a pessoa teve covid e Adiciona ao total de casos do municipio
         if(pessoa[i].Classificacao){
+            //item 3
             AdicionaMunicipioseCasos(Municipios, i);
+            //item 4
+            if(CasosentreDatas(inicio4, fim4, i)){
+			    totalconfirmados++;
+		    }
+            //item 5
+            if(CasosentreDatas(inicio5, fim5, i)){
+                AdicionaMunicipioseCasosEntreDatas(Municipios, i);
+            }
+            //item 6
+            /*
+            caso a cidade requerida do item 6 for TODAS sempre sera verdadeira para todas as iteracoes,
+            caso contrario ele compara somente a cidade solicitada, pois a segunda comparacao sera sempre falsa
+            */
+            if(strcmp(cidade,pessoa[i].Municipio)==0 || strcmp(cidade,"TODAS")==0){
+                morreu = pessoa[i].DataObito.ano;
+                ficouinternado = pessoa[i].FicouInternado;
+                //quantidade de pessoas confirmadas da cidade solicitada
+                confirmadas6++;
+                if(ficouinternado){
+                    internadas6++;
+                }
+                if(morreu){
+                    morreram6++;
+                }
+                if(morreu && ficouinternado){
+                    internadasMorreram++;
+                }
+            }
+            //item 7
+            //verifica se atende os requisitos do item 7
+            if(VeridicaIntem7(i, inicio7, fim7)){
+                somatorio += SomaDesvio(media, i);
+                //verifica se nao tem nenhuma comorbidade
+                if(VerificaComorbidade(i)){
+                    zeroComorbidades++;
+                }
+
+            }
         }
 
 	}
-	//printf("%d\n", totalconfirmados);
-    for(i=0;i<QTDMUNICIPIOS;i++){
-        printf("%s %d %d\n", Municipios[i].Cidade, Municipios[i].QtdCasos, i);
-    }
-	
+    OrdemAlfabetica(Municipios);
+    //chama a função pra imprimir o item 3
+    //chama a função pra imprimir o item 4
+    OrdemCasosEntreDatas(Municipios);
+    //chama a função pra imprimir o item 5
+    por100internadas = (internadas6/confirmadas6)*100;
+    por100mortes = (morreram6/confirmadas6)*100;
+    por100internadasMortes = (internadasMorreram/morreram6)*100;
+    //chamar a funcao pra imprimir o item 6
+    desvioPadrao = sqrt(somatorio/(quantidade7-1));
+    por100item7 = (zeroComorbidades/quantidade7)*100;
+    //chamar a funcao pra imprimir o item 7	
 
 return 0;
 }
@@ -212,10 +282,12 @@ return pessoa;
 
 int VerificaData(tData pessoas, tData inicio, tData fim){
 	int start, end, entre;
+    //tranforma em um numero do tipo aaaammdd
 	start = (inicio.ano * 10000) + (inicio.mes *100) + inicio.dia;
 	end = (fim.ano * 10000) + (fim.mes *100) + fim.dia;
 	entre = (pessoas.ano * 10000) + (pessoas.mes *100) + pessoas.dia;
 
+    //verifica se esta entre as datas
 	if(start <= entre && entre <= end){
 		return 1;
 	}
@@ -229,20 +301,12 @@ tData LetData(){
 return lido;
 };
 
-void printtData(tData data){
-	//Imprime na saida padrao a data formatada
-	printf("%d-%d-%d\n", data.ano, data.mes, data.dia);
-};
-
 int CasosentreDatas(tData inicio, tData fim, int indicepaciente){
 	//cria um tData com a DataCadastro do indice recebido na main
 	tData datapaciente = pessoa[indicepaciente].DataCadastro; 
 	//verifica se a data esta entre o intevalo passado na funcao
 	if(VerificaData(datapaciente, inicio, fim)){
-		//verifica se o paciente esta com covid caso sim returna 1
-		if(pessoa[indicepaciente].Classificacao){
-			return 1;
-		}
+	    return 1;
 	}	
 return 0;
 };
@@ -297,4 +361,79 @@ int VerificaseCidadecadastrada(tCidade municipios[], int Indice){
         }
     }
 return 0;
+};
+
+void OrdemAlfabetica(tCidade* Municipios){
+    int k, j;
+    tCidade aux;
+    //algoritimo bubble sort para colocar em ordem alfabetica
+    for (k = 0; k < QTDMUNICIPIOS - 1; k++) {
+        for (j = 0; j < QTDMUNICIPIOS - k - 1; j++) {
+            
+            if (strcmp(Municipios[j].Cidade, Municipios[j+1].Cidade) > 0) {
+                //inverte as vatiaveis
+                aux = Municipios[j];
+                Municipios[j] = Municipios[j+1];
+                Municipios[j+1] = aux;
+            }
+        }
+    }
+};
+
+void AdicionaMunicipioseCasosEntreDatas(tCidade* Municipios, int Indice){
+    int i;
+    for(i=0;i<QTDMUNICIPIOS;i++){
+        //adiciona um caso pro item 5 na cidade do paciente
+        if(strcmp(pessoa[Indice].Municipio,Municipios[i].Cidade) == 0){
+            Municipios[i].QtdCasosEntreDatas++;
+            break;
+        }
+    }
+};
+
+void OrdemCasosEntreDatas(tCidade* Municipios){
+    int k, j;
+    tCidade aux;
+    //algoritimo bubble sort para colocar em ordem decrescente em relacao a quantidade de casos entre as datas
+    for (k = 0; k < QTDMUNICIPIOS - 1; k++) {
+        for (j = 0; j < QTDMUNICIPIOS - k - 1; j++) {
+
+            if (Municipios[j].QtdCasosEntreDatas < Municipios[j+1].QtdCasosEntreDatas){
+                aux = Municipios[j];
+                Municipios[j] = Municipios[j+1];
+                Municipios[j+1] = aux;
+            }
+        }
+    }
+};
+
+int VeridicaIntem7(int indice, tData inicio7, tData fim7){
+    //verifica se foi confirmado covid19
+    if(pessoa[indice].Classificacao){
+        //verifica se esta entre as datas do item 7
+        if(CasosentreDatas(inicio7, fim7, indice)){
+            //verifica se o paciente morreu
+            if(pessoa[indice].DataObito.ano != 0){
+                return 1;
+            }
+        }
+    }
+
+};
+
+float SomaDesvio(float media, int indice){
+    float result;
+    //quadrado da subtracao da media pela idade do paciente
+    result = (pessoa[indice].IdadeNotificacao - media) * (pessoa[indice].IdadeNotificacao - media);
+    return result;
+};
+
+int VerificaComorbidade(int indice){
+    //verifica se tem alguma comorbidade
+    if(pessoa[indice].ComorbidadeCardio || pessoa[indice].ComorbidadeDiabetes || pessoa[indice].ComorbidadeObesidade
+    || pessoa[indice].ComorbidadePulmao || pessoa[indice].ComorbidadeRenal || pessoa[indice].ComorbidadeTabagismo){
+        return 0;
+    }
+    //retorna TRUE se nao tiver nenhuma comorbidade
+    return 1;
 };
