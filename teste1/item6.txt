@@ -1,0 +1,4 @@
+- Resultados para TODAS:
+- A % de pessoas com Covid-19 que ficaram internadas: 3.011%
+- A % de pessoas com Covid-19 que morreram: 3.390%
+- A % de pessoas que ficaram internadas e morreram: 46.741%
