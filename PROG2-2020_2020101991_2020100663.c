@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
+#include <sys/stat.h>
 
 #define LINHAS 202362               //define a quantidade de linhas que tem o arquivo
 #define QTDMUNICIPIOS 78            //define a quantidade de municipios
@@ -61,6 +62,13 @@ void AdicionaMunicipioseCasosEntreDatas(tCidade* Municipios, int Indice);
 void AdicionaMunicipioseCasos(tCidade* Municipios, int Indice);
 //Funcao para ler datas
 tData LetData();
+void ImprimeItem3(tCidade* Municiopios, int mincasos, char* caminho);
+void ImprimeItem4(int totalconfirmados, char* caminho);
+void ImprimeItem5(tCidade* Municipios, int topcidades, char* caminho);
+void ImprimeItem6(float internadas6, float morreram6, float internadasMorreram,
+		char* camiho, char* cidade);
+void ImprimeItem7(float media, float desvioPadrao, float semcomorbidades,
+		char* caminho);
 
 //cria o vetor de pacientes globalmente
 tPaciente pessoa[LINHAS];           
@@ -136,11 +144,7 @@ int main(){
 
     //verificando os itens pedidos
 	for(i=0; i<LINHAS; i++){
-        //verifica o item 4, se tem covid confirmada e se esta entre as datas fornecidas
-		if(CasosentreDatas(inicio4, fim4, i)){
-			totalconfirmados++;
-		}
-		//Verifica se a pessoa teve covid e Adiciona ao total de casos do municipio
+		//Verifica se a pessoa teve covid
         if(pessoa[i].Classificacao){
             //item 3
             AdicionaMunicipioseCasos(Municipios, i);
@@ -185,18 +189,30 @@ int main(){
         }
 
 	}
+
+	//Cria o diretorio onte serao armazenados os arquivos .txt
+	mkdir(caminho, 0777);		
+
+	
     OrdemAlfabetica(Municipios);
     //chama a função pra imprimir o item 3
+	ImprimeItem3(Municipios, mincasos, caminho);
     //chama a função pra imprimir o item 4
+	ImprimeItem4(totalconfirmados, caminho);
     OrdemCasosEntreDatas(Municipios);
     //chama a função pra imprimir o item 5
+	ImprimeItem5(Municipios, topcidades, caminho);
+	//Calcula as porcentagens do item 6 
     por100internadas = (internadas6/confirmadas6)*100;
     por100mortes = (morreram6/confirmadas6)*100;
     por100internadasMortes = (internadasMorreram/morreram6)*100;
-    //chamar a funcao pra imprimir o item 6
+    //chama a funcao pra imprimir o item 6
+	ImprimeItem6(por100internadas, por100mortes, por100internadasMortes,
+			caminho, cidade);
     desvioPadrao = sqrt(somatorio/(quantidade7-1));
     por100item7 = (zeroComorbidades/quantidade7)*100;
-    //chamar a funcao pra imprimir o item 7	
+    //chama a funcao pra imprimir o item 7	
+	ImprimeItem7(media, desvioPadrao, por100item7, caminho);
 
 return 0;
 }
@@ -437,3 +453,116 @@ int VerificaComorbidade(int indice){
     //retorna TRUE se nao tiver nenhuma comorbidade
     return 1;
 };
+
+void ImprimeItem3(tCidade* municipio, int mincasos, char* caminho){
+	int i;
+	//Cria a string path onde sera salvo o caminho para o arquivo
+	char path[30];
+	//copia o nome do diretorio para que possa ser adicionado o nome do txt
+	strcpy(path, caminho);
+	//Concatena o nome do arquivo no caminho
+	strcat(path, "item3.txt");
+	//Cria o arquivo
+	FILE* arq;
+	arq = fopen(path, "w+");
+	if(arq == NULL){
+		printf("Erro ao criar item3.txt");
+		exit(1);
+	}
+	//Imprime as cidades com a quantidades de casos maior do que mincasos
+	for(i = 0; i < QTDMUNICIPIOS; i++){
+		if(municipio[i].QtdCasos > mincasos){
+			fprintf(arq, "- %s: %d casos\n",
+			municipio[i].Cidade, municipio[i].QtdCasos);
+		}
+	}
+	fclose(arq);
+};
+void ImprimeItem4(int totalconfirmados, char* caminho){
+	//Cria a string path onde sera salvo o caminho para o arquivo
+	char path[30];
+	//Copia o nome do diretorio para que possa ser adicionado o nome do txt
+	strcpy(path, caminho);
+	//Concatena o nome do arquivo no caminho
+	strcat(path, "item4.txt");
+	//Cria o arquivo
+	FILE* arq;
+	arq = fopen(path, "w+");
+	if(arq == NULL){
+		printf("Erro ao criar item4.txt");
+		exit(1);
+	}
+	//Imprime no arquivo o total de casos confirmados entre as datas
+	fprintf(arq, "- Total de pessoas: %d", totalconfirmados);
+	fclose(arq);
+};
+void ImprimeItem5(tCidade* municipios, int topcidades, char* caminho){
+	int i;
+	//Cria a string path onde sera salvo o caminho para o arquivo
+	char path[30];
+	//Copia o nome do diretorio para que possa ser adicionado o nome do txt
+	strcpy(path, caminho);
+	strcat(path, "item5.txt");
+	//Cria o arquivo
+	FILE* arq;
+	arq = fopen(path, "w+");
+	if(arq == NULL){
+		printf("Erro ao criar item5.txt");
+		exit(1);
+	}
+	//Imprime no arquivo as topcidades em ordem decrescente durante certo
+	//intervalo de datas
+	for(i = 0; i < topcidades; i++){
+		fprintf(arq, "- %s: %d casos\n",
+			municipios[i].Cidade, municipios[i].QtdCasosEntreDatas);	
+	}
+	fclose(arq);
+};
+void ImprimeItem6(float por100internadas, float por100mortes,
+		float por100internadasMortes, char* caminho, char* cidade){
+	//Cria a string path onde sera salvo o caminho para o arquivo
+	char path[30];
+	//Copia o nome do diretorio para que possa ser adicionado o nome do txt
+	strcpy(path, caminho);
+	strcat(path, "item6.txt");
+	//Cria o arquivo
+	FILE* arq;
+	arq = fopen(path, "w+");
+	if(arq == NULL){
+		printf("Erro ao criar item5.txt");
+		exit(1);
+	}
+	//Imprime no arquivo a cidade solicitada e as porcentagens de internados,
+	//mortos e internados que vieram a obito
+	fprintf(arq, "- Resultados para %s:\n", cidade);
+	fprintf(arq, "- A %% de pessoas com Covid-19 que ficaram internadas: %.3f%%\n",
+			por100internadas);
+	fprintf(arq, "- A %% de pessoas com Covid-19 que morreram: %.3f%%\n",
+			por100mortes);
+	fprintf(arq, "- A %% de pessoas que ficaram internadas e morreram: %.3f%%",
+			por100internadasMortes);
+	fclose(arq);
+	};
+void ImprimeItem7(float media, float desvioPadrao, float por100item7,
+	char* caminho){
+	int i;
+	//Cria a string path onde sera salvo o caminho para o arquivo
+	char path[30];
+	//Copia o nome do diretorio para que possa ser adicionado o nome do txt
+	strcpy(path, caminho);
+	strcat(path, "item7.txt");
+	//Cria o arquivo
+	FILE* arq;
+	arq = fopen(path, "w+");
+	if(arq == NULL){
+		printf("Erro ao criar item5.txt");
+		exit(1);
+	}
+	//Imprime no arquivo a media e o desvio padrao das idades
+	fprintf(arq, "A media e desvio padrao da idade: %.3f -- %.3f\n", 
+			media, desvioPadrao);
+	//Imprime no arquivo a porcentagem de pessoas que morreram sem comorbidades
+	fprintf(arq, "A %% de pessoas que morreram sem comorbidade: %.3f%%",
+			por100item7);
+	fclose(arq);
+	};

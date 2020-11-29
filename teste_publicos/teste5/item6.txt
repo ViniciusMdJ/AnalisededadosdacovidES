@@ -1,0 +1,4 @@
+- Resultados para SERRA:
+- A % de pessoas com Covid-19 que ficaram internadas: 3.884%
+- A % de pessoas com Covid-19 que morreram: 3.849%
+- A % de pessoas que ficaram internadas e morreram: 55.889%

@@ -1,0 +1,4 @@
+- Resultados para COLATINA:
+- A % de pessoas com Covid-19 que ficaram internadas: 1.059%
+- A % de pessoas com Covid-19 que morreram: 2.382%
+- A % de pessoas que ficaram internadas e morreram: 17.778%
