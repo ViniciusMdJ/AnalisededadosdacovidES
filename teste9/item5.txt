@@ -1,0 +1,3 @@
+- VILA VELHA: 3006 casos
+- SERRA: 2817 casos
+- VITORIA: 2287 casos

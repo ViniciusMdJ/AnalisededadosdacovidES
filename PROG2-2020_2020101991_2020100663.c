@@ -211,6 +211,9 @@ int main(){
 			caminho, cidade);
     desvioPadrao = sqrt(somatorio/(quantidade7-1));
     por100item7 = (zeroComorbidades/quantidade7)*100;
+	if(quantidade7 == 0) {
+		media = desvioPadrao = por100item7 = 0;
+	}
     //chama a funcao pra imprimir o item 7	
 	ImprimeItem7(media, desvioPadrao, por100item7, caminho);
 
@@ -512,7 +515,7 @@ void ImprimeItem5(tCidade* municipios, int topcidades, char* caminho){
 	}
 	//Imprime no arquivo as topcidades em ordem decrescente durante certo
 	//intervalo de datas
-	for(i = 0; i < topcidades; i++){
+	for(i = 0; i < topcidades && municipios[i].QtdCasosEntreDatas > 0; i++){
 		fprintf(arq, "- %s: %d casos\n",
 			municipios[i].Cidade, municipios[i].QtdCasosEntreDatas);	
 	}
